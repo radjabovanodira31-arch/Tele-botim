@@ -1,5 +1,6 @@
 import { Telegraf, session, Markup, Scenes } from 'telegraf';
 import dotenv from 'dotenv';
+import http from 'http';
 
 // .env faylidan o'zgaruvchilarni o'qish
 dotenv.config();
@@ -449,3 +450,13 @@ bot.launch().then(() => {
 // Node process to'xtaganda (masalan CTRL+C bosganda) botni to'xtatish
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
+
+// Railway va boshqa bulutli xizmatlar xatolik bermasligi (portni kutib qotib qolmasligi) uchun
+// kichik veb-server ochib qo'yamiz.
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('Bot is running...');
+}).listen(PORT, () => {
+    console.log(`Port tinglanmoqda: ${PORT} (Railway uchun)`);
+});
