@@ -1,6 +1,11 @@
 import { Telegraf, session, Markup, Scenes } from 'telegraf';
 import dotenv from 'dotenv';
 import http from 'http';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // .env faylidan o'zgaruvchilarni o'qish
 dotenv.config();
@@ -213,7 +218,7 @@ bot.command('admin', (ctx) => {
 // 1. Bepul darslik
 bot.hears('🎁 Bepul darslik', async (ctx) => {
     const text = `Salom! 7 yillik hunarmand master sifatida, ijodkorlikka qiziqish bildirayotganligingizdan hursandman! Marhamat bepul darslikni oling.`;
-    const photoUrl = './images/master.jpg'; // Shu yerga o'zingizning rasmingizni images papkasiga tashlab nomini yozing
+    const photoUrl = path.resolve(__dirname, './images/master.jpg'); // Shu yerga o'zingizning rasmingizni images papkasiga tashlab nomini yozing
     
     // Rasm va tugma (Inline keyboard) bilan yuborish
     try {
@@ -256,7 +261,7 @@ bot.hears('🧸 To\'plamlar', async (ctx) => {
     await ctx.reply("6 xil qo’g’irchoq tikish to’plamlarimiz bor:");
     for (let kit of products.kits) {
         try {
-            await ctx.replyWithPhoto({source: kit.img}, {
+            await ctx.replyWithPhoto({source: path.resolve(__dirname, kit.img)}, {
                 caption: `📦 *${kit.name}*\n💰 Narxi: ${kit.price} so'm`,
                 parse_mode: 'Markdown',
                 reply_markup: getProductKeyboard(kit.id, ctx.session.cart || {})
@@ -281,7 +286,7 @@ bot.hears('🛍 Kerakli mahsulotlar', (ctx) => {
 async function sendCategoryProducts(ctx, categoryArray) {
     for (let item of categoryArray) {
          try {
-             await ctx.replyWithPhoto({source: item.img}, {
+             await ctx.replyWithPhoto({source: path.resolve(__dirname, item.img)}, {
                 caption: `🔹 *${item.name}*\n💰 Narxi: ${item.price} so'm`,
                 parse_mode: 'Markdown',
                 reply_markup: getProductKeyboard(item.id, ctx.session.cart || {})
