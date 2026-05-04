@@ -27,8 +27,8 @@ const db = {
 // Rasmlar o'rniga namuna rasm linklari kiritilgan, ishlatishdan oldin o'zgartirib olish mumkin.
 const products = {
     kits: [
-        { id: 'kit1', name: "Klara to'plami", price: 150000, img: "./images/Klara_ to'plami.jpg.jpg" },
-        { id: 'kit2', name: "Alisa to'plami", price: 160000, img: "./images/Alisa_ to'plami.jpg.jpg" },
+        { id: 'kit1', name: "Klara to'plami", price: 150000, img: "./images/Klara_ to'plami..jpg" },
+        { id: 'kit2', name: "Alisa to'plami", price: 160000, img: "./images/Alisa_ to'plami..jpg" },
         { id: 'kit3', name: "Zara to'plami", price: 150000, img: "./images/Zara to'plami.jpg" },
         { id: 'kit4', name: "Ella to'plami", price: 150000, img: "./images/Ella_ to'plami..jpg" },
         { id: 'kit5', name: "Ro'za to'plami", price: 150000, img: "./images/Ro'za to'plami.jpg" },
@@ -36,16 +36,16 @@ const products = {
     ],
     matolar: [
         { id: 'mat1', name: "Kukolniy trikotaj 0.5 - yarim metr", price: 35000, img: "./images/kukolniy trikotaj.jpg" },
-        { id: 'mat2', name: "2 talik Alisa uchun to'plam matolari + furnitura", price: 55000, img: "./images/Alisa_ uchun_  mato_ to'plam.jpg.jpg" },
-        { id: 'mat3', name: "Klara uchun to'plam matosi + furnitura", price: 45000, img: "./images/Klara_ uchun_ to'plam_ matolari.jpg.jpg" },
+        { id: 'mat2', name: "2 talik Alisa uchun to'plam matolari + furnitura", price: 55000, img: "./images/Alisa_ uchun_  mato_ to'plam..jpg" },
+        { id: 'mat3', name: "Klara uchun to'plam matosi + furnitura", price: 45000, img: "./images/Klara_ uchun_ to'plam_ matolari.jpg" },
         { id: 'mat4', name: "Zara uchun to'plam matosi + furnitura", price: 45000, img: "./images/Zara uchu to'plam matolari.jpg" },
         { id: 'mat5', name: "Roza uchun to'plam matosi + furnitura", price: 45000, img: "./images/Ro'za uchun to'plam matolari.jpg" },
-        { id: 'mat6', name: "Ella uchun to'plam matosi + furnitura", price: 40000, img: "./images/Ella_uchun_toplam_matolari.jpg.jpg" }
+        { id: 'mat6', name: "Ella uchun to'plam matosi + furnitura", price: 40000, img: "./images/Ella_uchun_toplam_matolari..jpg" }
     ],
     sochlar: [
         { id: 'soch1', name: "To'q jigarrang 25 smli sochlar", price: 23000, img: "./images/to'q jigarrang 25 smli.jpg" },
-        { id: 'soch2', name: "Kashtan rangli 25 smli sochlar", price: 23000, img: "./images/kashtan_ rangli_ 25_ smli_ sochlar.jpg.jpg" },
-        { id: 'soch3', name: "Sariq soch 25 sm", price: 23000, img: "./images/25_ smli_ sariqsoch.jpg.jpg" },
+        { id: 'soch2', name: "Kashtan rangli 25 smli sochlar", price: 23000, img: "./images/kashtan_ rangli_ 25_ smli_ sochlar..jpg" },
+        { id: 'soch3', name: "Sariq soch 25 sm", price: 23000, img: "./images/25_ smli_ sariqsoch..jpg" },
         { id: 'soch4', name: "To'q jigarrang 15 smli", price: 18000, img: "./images/toq jigarrang 15 smli.jpg" },
         { id: 'soch5', name: "Sariq soch 15 smli", price: 18000, img: "./images/sariq soch 15 smli.jpg" },
         { id: 'soch6', name: "To'q jigarrang soch 5 smli", price: 12000, img: "./images/to'q jigarrang soch 5 smli.jpg" },
@@ -70,14 +70,14 @@ const products = {
         { id: 'aks3', name: "Remen regulyator", price: 1000, img: "./images/remen regulyator.jpg" },
         { id: 'aks4', name: "Qora ko'z 8 mmli (1 pachka)", price: 6000, img: "./images/qora ko'z 8 mm.jpg" },
         { id: 'aks5', name: "Qora ko'z 4 mmli (1 pachka)", price: 5000, img: "./images/qora ko'z 4mm.jpg" },
-        { id: 'aks6', name: "Kipriklar 8 mmli", price: 13000, img: "./images/kipriklar.jpg.jpg" },
+        { id: 'aks6', name: "Kipriklar 8 mmli", price: 13000, img: "./images/kipriklar..jpg" },
         { id: 'aks7', name: "Metall knopka sumka uchun", price: 1000, img: "./images/metal knopka sumka uchun.jpg" },
         { id: 'aks8', name: "Termonakleyka 12sm ga - 12sm", price: 12000, img: "./images/termonakleyka web.jpg" },
         { id: 'aks9', name: "Ko'zli yuz termonakleykasi (dona)", price: 3000, img: "./images/ko'zli yuz.jpg" },
-        { id: 'aks10', name: "Kiprikli yuz", price: 3000, img: "./images/kiprikli_ yuz.jpg.jpg" },
-        { id: 'aks11', name: "Jung igna 9 smli", price: 1500, img: "./images/jung_ igna_ 9 sm.jpg.jpg" },
+        { id: 'aks10', name: "Kiprikli yuz", price: 3000, img: "./images/kiprikli_ yuz..jpg" },
+        { id: 'aks11', name: "Jung igna 9 smli", price: 1500, img: "./images/jung_ igna_ 9 sm..jpg" },
         { id: 'aks12', name: "Oq jung 50 gr", price: 35000, img: "./images/oq jung 50 gram.jpg" },
-        { id: 'aks13', name: "Dermantin 30x30 sm havorang + pushti 2 ta", price: 18000, img: "./images/dermantin.jpg.jpg" },
+        { id: 'aks13', name: "Dermantin 30x30 sm havorang + pushti 2 ta", price: 18000, img: "./images/dermantin..jpg" },
         { id: 'aks14', name: "Zanjir 3 mmli (1 metr)", price: 4000, img: "./images/zanjir.jpg" },
         { id: 'aks15', name: "Metal knopka (sarafan uchun, 1 jufti)", price: 4000, img: "./images/metal knopka sarafan uchun.jpg" },
         { id: 'aks16', name: "Oq quyoncha 6 smli", price: 9000, img: "./images/oq quyoncha.jpg" },
