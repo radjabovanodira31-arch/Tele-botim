@@ -166,8 +166,11 @@ const orderWizard = new Scenes.WizardScene(
         ctx.wizard.state.comment = ctx.message.text;
         
         const cart = ctx.session?.cart || {};
+        const username = ctx.from.username ? `@${ctx.from.username}` : "Mavjud emas";
+        
         let orderText = `📦 *YANGI BUYURTMA* \n\n`;
         orderText += `👤 *Ism:* ${ctx.wizard.state.name}\n`;
+        orderText += `🔗 *Username:* ${username}\n`;
         orderText += `📞 *Telefon:* ${ctx.wizard.state.phone}\n`;
         orderText += `📝 *Izoh:* ${ctx.wizard.state.comment}\n\n`;
         
@@ -194,7 +197,19 @@ const orderWizard = new Scenes.WizardScene(
                 await bot.telegram.sendMessage(ADMIN_CHAT_ID, orderText, { parse_mode: 'Markdown' });
             }
             db.orders += 1;
-            ctx.reply("Buyurtmangiz qabul qilindi! Tez orada aloqaga chiqamiz.", mainMenu);
+            
+            const successMessage = "✅ Buyurtmangiz qabul qilindi! Tez orada aloqaga chiqamiz.\n\n" +
+                                   "💳 *To'lov uchun karta raqami:*\n" +
+                                   "Humo: `9860 2701 0270 3435`\n" +
+                                   "👤 Radjabova Nodira\n\n" +
+                                   "⚠️ To'lov amalga oshirilishi bilan yuboriladi.";
+            
+            const deliveryMessage = "📍 *Qayerga yuborish kerak?*\n\n" +
+                                    "— Yandex orqali olishni istasangiz, telefon raqamingiz va lokatsiyangizni yuboring.\n" +
+                                    "— BTS, EMU pochtalari orqali olishni xohlasangiz, ism, tel raqam, viloyat va tumaningizni yozing (Masalan: Samarqand viloyati, Urgut tumani).";
+                                   
+            await ctx.reply(successMessage, { parse_mode: 'Markdown' });
+            await ctx.reply(deliveryMessage, { parse_mode: 'Markdown', ...mainMenu });
             ctx.session.cart = {}; 
         } catch (error) {
             ctx.reply("Kechirasiz, xatolik yuz berdi. Iltimos qayta urinib ko'ring yoki adminga to'g'ridan-to'g'ri yozing.", mainMenu);
