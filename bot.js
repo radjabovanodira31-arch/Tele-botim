@@ -31,8 +31,8 @@ const db = {
 // --- MAHSULOTLAR RO'YXATI ---
 const products = {
     kits: [
-        { id: 'kit1', name: "Klara to'plami", price: 150000, img: "Klara_ to'plami..jpg" },
-        { id: 'kit2', name: "Alisa to'plami", price: 160000, img: "Alisa_ to'plami..jpg" },
+        { id: 'kit1', name: "Klara to'plami", price: 150000, img: "kit1.jpg" },
+        { id: 'kit2', name: "Alisa to'plami", price: 160000, img: "kit2.jpg" },
         { id: 'kit3', name: "Zara to'plami", price: 150000, img: "Zara to'plami.jpg" },
         { id: 'kit4', name: "Ella to'plami", price: 150000, img: "Ella_ to'plami..jpg" },
         { id: 'kit5', name: "Ro'za to'plami", price: 150000, img: "Ro'za to'plami.jpg" },
@@ -98,15 +98,15 @@ function getImagePath(imgName) {
         path.join(__dirname, 'images', imgName.replace('.jpg', '')),
         path.join(__dirname, imgName.replace('.jpg', ''))
     ];
-    
+
     for (let p of possiblePaths) {
         if (fs.existsSync(p)) return p;
     }
-    
+
     // 2. Qisman nom boyicha qidirish (GitHub'ga yuklashdagi muammolarni oldini olish uchun)
     const normalize = (str) => str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     const cleanImgName = normalize(imgName);
-    
+
     const searchDirs = [__dirname, path.join(__dirname, 'images')];
     for (let dir of searchDirs) {
         if (!fs.existsSync(dir)) continue;
@@ -120,13 +120,13 @@ function getImagePath(imgName) {
             }
         }
     }
-    
+
     return possiblePaths[0]; // baribir topilmasa defaultni qaytaramiz
 }
 
 // Barcha mahsulotlarni bitta massivda saqlab olish
 const allProducts = [
-    ...products.kits, ...products.matolar, ...products.sochlar, 
+    ...products.kits, ...products.matolar, ...products.sochlar,
     ...products.oyoq_kiyim, ...products.aksessuar
 ];
 
@@ -164,18 +164,20 @@ const orderWizard = new Scenes.WizardScene(
     },
     async (ctx) => {
         ctx.wizard.state.comment = ctx.message.text;
-        
+
         const cart = ctx.session?.cart || {};
         const username = ctx.from.username ? `@${ctx.from.username}` : "Mavjud emas";
-        
-        let orderText = `📦 *YANGI BUYURTMA* \n\n`;
-        orderText += `👤 *Ism:* ${ctx.wizard.state.name}\n`;
-        orderText += `🔗 *Username:* ${username}\n`;
-        orderText += `📞 *Telefon:* ${ctx.wizard.state.phone}\n`;
-        orderText += `📝 *Izoh:* ${ctx.wizard.state.comment}\n\n`;
-        
+
+        let orderText = `📦 <b>YANGI BUYURTMA</b> \n\n`;
+        const safeName = (ctx.wizard.state.name || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const safeComment = (ctx.wizard.state.comment || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        orderText += `👤 <b>Ism:</b> ${safeName}\n`;
+        orderText += `🔗 <b>Username:</b> ${username}\n`;
+        orderText += `📞 <b>Telefon:</b> ${ctx.wizard.state.phone}\n`;
+        orderText += `📝 <b>Izoh:</b> ${safeComment}\n\n`;
+
         let total = 0;
-        let cartItemsText = `*Xarid qilingan narsalar (Savatdan):*\n`;
+        let cartItemsText = `<b>Xarid qilingan narsalar (Savatdan):</b>\n`;
         for (let [id, qty] of Object.entries(cart)) {
             let item = allProducts.find(p => p.id === id);
             if (item) {
@@ -184,38 +186,38 @@ const orderWizard = new Scenes.WizardScene(
                 total += sum;
             }
         }
-        
+
         if (Object.keys(cart).length === 0) {
             cartItemsText += "Xaridorning savati bo'sh. Faqatgina izoh yozilgan.\n";
         } else {
             orderText += cartItemsText;
-            orderText += `\n💰 *Umumiy summa:* ${total} so'm`;
+            orderText += `\n💰 <b>Umumiy summa:</b> ${total} so'm`;
         }
-        
+
         try {
-            if(ADMIN_CHAT_ID && ADMIN_CHAT_ID !== 'bu_yerdagi_yozuv_orniga_telegram_id_yozing') {
-                await bot.telegram.sendMessage(ADMIN_CHAT_ID, orderText, { parse_mode: 'Markdown' });
+            if (ADMIN_CHAT_ID && ADMIN_CHAT_ID !== 'bu_yerdagi_yozuv_orniga_telegram_id_yozing') {
+                await bot.telegram.sendMessage(ADMIN_CHAT_ID, orderText, { parse_mode: 'HTML' });
             }
             db.orders += 1;
-            
+
             const successMessage = "✅ Buyurtmangiz qabul qilindi! Tez orada aloqaga chiqamiz.\n\n" +
-                                   "💳 *To'lov uchun karta raqami:*\n" +
-                                   "Humo: `9860 2701 0270 3435`\n" +
-                                   "👤 Radjabova Nodira\n\n" +
-                                   "⚠️ To'lov amalga oshirilishi bilan yuboriladi.";
-            
-            const deliveryMessage = "📍 *Qayerga yuborish kerak?*\n\n" +
-                                    "— Yandex orqali olishni istasangiz, telefon raqamingiz va lokatsiyangizni yuboring.\n" +
-                                    "— BTS, EMU pochtalari orqali olishni xohlasangiz, ism, tel raqam, viloyat va tumaningizni yozing (Masalan: Samarqand viloyati, Urgut tumani).";
-                                   
-            await ctx.reply(successMessage, { parse_mode: 'Markdown' });
-            await ctx.reply(deliveryMessage, { parse_mode: 'Markdown', ...mainMenu });
-            ctx.session.cart = {}; 
+                "💳 <b>To'lov uchun karta raqami:</b>\n" +
+                "Humo: <code>9860 2701 0270 3435</code>\n" +
+                "👤 Radjabova Nodira\n\n" +
+                "⚠️ To'lov amalga oshirilishi bilan yuboriladi.";
+
+            const deliveryMessage = "📍 <b>Qayerga yuborish kerak?</b>\n\n" +
+                "— Yandex orqali olishni istasangiz, telefon raqamingiz va lokatsiyangizni yuboring.\n" +
+                "— BTS, EMU pochtalari orqali olishni xohlasangiz, ism, tel raqam, viloyat va tumaningizni yozing (Masalan: Samarqand viloyati, Urgut tumani).";
+
+            await ctx.reply(successMessage, { parse_mode: 'HTML' });
+            await ctx.reply(deliveryMessage, { parse_mode: 'HTML', ...mainMenu });
+            ctx.session.cart = {};
         } catch (error) {
             ctx.reply("Kechirasiz, xatolik yuz berdi. Iltimos qayta urinib ko'ring yoki adminga to'g'ridan-to'g'ri yozing.", mainMenu);
             console.error("Adminga xabar yuborishda xato:", error);
         }
-        
+
         return ctx.scene.leave();
     }
 );
@@ -239,9 +241,9 @@ bot.start((ctx) => {
 
 bot.command('admin', (ctx) => {
     if (ctx.from.id.toString() === ADMIN_CHAT_ID) {
-         ctx.reply(`📊 *Admin Statistika:*\n\n👥 Botdan foydalanganlar soni (taxminiy): ${db.users}\n📦 Jami qabul qilingan buyurtmalar: ${db.orders}`, {parse_mode: 'Markdown'});
+        ctx.reply(`📊 <b>Admin Statistika:</b>\n\n👥 Botdan foydalanganlar soni (taxminiy): ${db.users}\n📦 Jami qabul qilingan buyurtmalar: ${db.orders}`, { parse_mode: 'HTML' });
     } else {
-         ctx.reply("Sizda admin huquqlari yo'q.");
+        ctx.reply("Sizda admin huquqlari yo'q.");
     }
 });
 
@@ -249,10 +251,10 @@ bot.command('admin', (ctx) => {
 bot.hears('🎁 Bepul darslik', async (ctx) => {
     const text = `Salom! 7 yillik hunarmand master sifatida, ijodkorlikka qiziqish bildirayotganligingizdan hursandman! Marhamat bepul darslikni oling.`;
     const photoUrl = getImagePath('master.jpg');
-    
+
     try {
         await ctx.replyWithPhoto(
-            { source: photoUrl }, 
+            { source: photoUrl },
             {
                 caption: text,
                 reply_markup: {
@@ -275,9 +277,9 @@ function getProductKeyboard(itemId, cart) {
     return {
         inline_keyboard: [
             [
-                {text: '➖', callback_data: `minus_${itemId}`},
-                {text: `${qty} ta`, callback_data: `noop`},
-                {text: '➕', callback_data: `plus_${itemId}`}
+                { text: '➖', callback_data: `minus_${itemId}` },
+                { text: `${qty} ta`, callback_data: `noop` },
+                { text: '➕', callback_data: `plus_${itemId}` }
             ]
         ]
     };
@@ -287,15 +289,15 @@ bot.hears('🧸 To\'plamlar', async (ctx) => {
     await ctx.reply("6 xil qo’g’irchoq tikish to’plamlarimiz bor:");
     for (let kit of products.kits) {
         try {
-            await ctx.replyWithPhoto({source: getImagePath(kit.img)}, {
-                caption: `📦 *${kit.name}*\n💰 Narxi: ${kit.price} so'm`,
-                parse_mode: 'Markdown',
+            await ctx.replyWithPhoto({ source: getImagePath(kit.img) }, {
+                caption: `📦 <b>${kit.name}</b>\n💰 Narxi: ${kit.price} so'm`,
+                parse_mode: 'HTML',
                 reply_markup: getProductKeyboard(kit.id, ctx.session.cart || {})
             });
-        } catch(e) {
+        } catch (e) {
             console.error("Rasm yuborishda xato (To'plamlar): ", e.message);
-            await ctx.reply(`📦 *${kit.name}*\n💰 Narxi: ${kit.price} so'm`, {
-                parse_mode: 'Markdown',
+            await ctx.reply(`📦 <b>${kit.name}</b>\n💰 Narxi: ${kit.price} so'm`, {
+                parse_mode: 'HTML',
                 reply_markup: getProductKeyboard(kit.id, ctx.session.cart || {})
             });
         }
@@ -308,19 +310,19 @@ bot.hears('🛍 Kerakli mahsulotlar', (ctx) => {
 
 async function sendCategoryProducts(ctx, categoryArray) {
     for (let item of categoryArray) {
-         try {
-             await ctx.replyWithPhoto({source: getImagePath(item.img)}, {
-                caption: `🔹 *${item.name}*\n💰 Narxi: ${item.price} so'm`,
-                parse_mode: 'Markdown',
+        try {
+            await ctx.replyWithPhoto({ source: getImagePath(item.img) }, {
+                caption: `🔹 <b>${item.name}</b>\n💰 Narxi: ${item.price} so'm`,
+                parse_mode: 'HTML',
                 reply_markup: getProductKeyboard(item.id, ctx.session.cart || {})
             });
-         } catch(e) {
-             console.error("Rasm yuborishda xato: ", e.message);
-             await ctx.reply(`🔹 *${item.name}*\n💰 Narxi: ${item.price} so'm`, {
-                parse_mode: 'Markdown',
+        } catch (e) {
+            console.error("Rasm yuborishda xato: ", e.message);
+            await ctx.reply(`🔹 <b>${item.name}</b>\n💰 Narxi: ${item.price} so'm`, {
+                parse_mode: 'HTML',
                 reply_markup: getProductKeyboard(item.id, ctx.session.cart || {})
             });
-         }
+        }
     }
 }
 
@@ -335,22 +337,22 @@ bot.hears('⬅️ Asosiy menyu', (ctx) => {
 
 bot.action(/plus_(.+)/, async (ctx) => {
     const itemId = ctx.match[1];
-    if(!ctx.session.cart) ctx.session.cart = {};
+    if (!ctx.session.cart) ctx.session.cart = {};
     ctx.session.cart[itemId] = (ctx.session.cart[itemId] || 0) + 1;
-    
-    try { await ctx.editMessageReplyMarkup(getProductKeyboard(itemId, ctx.session.cart)); } catch(e) {}
+
+    try { await ctx.editMessageReplyMarkup(getProductKeyboard(itemId, ctx.session.cart)); } catch (e) { }
     await ctx.answerCbQuery();
 });
 
 bot.action(/minus_(.+)/, async (ctx) => {
     const itemId = ctx.match[1];
-    if(!ctx.session.cart) ctx.session.cart = {};
+    if (!ctx.session.cart) ctx.session.cart = {};
     if (ctx.session.cart[itemId] && ctx.session.cart[itemId] > 0) {
         ctx.session.cart[itemId] -= 1;
-        if(ctx.session.cart[itemId] === 0) delete ctx.session.cart[itemId];
+        if (ctx.session.cart[itemId] === 0) delete ctx.session.cart[itemId];
     }
-    
-    try { await ctx.editMessageReplyMarkup(getProductKeyboard(itemId, ctx.session.cart)); } catch(e) {}
+
+    try { await ctx.editMessageReplyMarkup(getProductKeyboard(itemId, ctx.session.cart)); } catch (e) { }
     await ctx.answerCbQuery();
 });
 
@@ -362,26 +364,26 @@ bot.hears('🛒 Savat', (ctx) => {
         return ctx.reply("Sizning savatingiz hozircha bo'sh.");
     }
 
-    let text = "🛒 *Sizning savatingiz:*\n\n";
+    let text = "🛒 <b>Sizning savatingiz:</b>\n\n";
     let total = 0;
 
     for (let [id, qty] of Object.entries(cart)) {
         let item = allProducts.find(p => p.id === id);
         if (item) {
             let sum = item.price * qty;
-            text += `🔸 *${item.name}*\n${qty} dona x ${item.price} = ${sum} so'm\n\n`;
+            text += `🔸 <b>${item.name}</b>\n${qty} dona x ${item.price} = ${sum} so'm\n\n`;
             total += sum;
         }
     }
 
-    text += `💰 *Umumiy summa:* ${total} so'm`;
+    text += `💰 <b>Umumiy summa:</b> ${total} so'm`;
 
     ctx.reply(text, {
-        parse_mode: 'Markdown',
+        parse_mode: 'HTML',
         reply_markup: {
             inline_keyboard: [
-                [{text: "🗑 Savatni tozalash", callback_data: "clear_cart"}],
-                [{text: "📦 Buyurtma berish", callback_data: "checkout"}]
+                [{ text: "🗑 Savatni tozalash", callback_data: "clear_cart" }],
+                [{ text: "📦 Buyurtma berish", callback_data: "checkout" }]
             ]
         }
     });
@@ -403,16 +405,16 @@ bot.hears('📦 Buyurtma berish', (ctx) => {
 });
 
 bot.hears('❓ Savollar', (ctx) => {
-    const faq = `❓ *Ko'p beriladigan savollar:*\n\n` +
-    `💬 "Video darsliklar qanday formatda bo'ladi?"\n✅ Onlayn formatda\n\n` +
-    `💬 "Qanday uslubda olish mumkin?"\n✅ Toshkent bo'ylab Yandex orqali\n✅ Viloyatlar bo'ylab 1 kundan 3 kungacha BTS pochta orqali.\n\n` +
-    `💬 "To'lov usuli qanday?"\n✅ Karta orqali oldindan to'lov.`;
-    ctx.reply(faq, {parse_mode: 'Markdown'});
+    const faq = `❓ <b>Ko'p beriladigan savollar:</b>\n\n` +
+        `💬 "Video darsliklar qanday formatda bo'ladi?"\n✅ Onlayn formatda\n\n` +
+        `💬 "Qanday uslubda olish mumkin?"\n✅ Toshkent bo'ylab Yandex orqali\n✅ Viloyatlar bo'ylab 1 kundan 3 kungacha BTS pochta orqali.\n\n` +
+        `💬 "To'lov usuli qanday?"\n✅ Karta orqali oldindan to'lov.`;
+    ctx.reply(faq, { parse_mode: 'HTML' });
 });
 
 bot.hears('📞 Bog\'lanish', (ctx) => {
-    const contacts = `📞 *Biz bilan bog'lanish:*\n\n🔵 Telegram: @Nodira_Abdullaevna\n📱 Telefon: +998950589181\n⏰ Ish vaqti: 09:00 - 18:00`;
-    ctx.reply(contacts, {parse_mode: 'Markdown'});
+    const contacts = `📞 <b>Biz bilan bog'lanish:</b>\n\n🔵 Telegram: @Nodira_Abdullaevna\n📱 Telefon: +998950589181\n⏰ Ish vaqti: 09:00 - 18:00`;
+    ctx.reply(contacts, { parse_mode: 'HTML' });
 });
 
 bot.launch().then(() => {
