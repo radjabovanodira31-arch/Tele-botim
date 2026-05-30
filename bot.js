@@ -31,8 +31,8 @@ const db = {
 // --- MAHSULOTLAR RO'YXATI ---
 const products = {
     kits: [
-        { id: 'kit1', name: "Klara to'plami", price: 200000, img: "kit1.jpg" },
-        { id: 'kit2', name: "Alisa to'plami", price: 200000, img: "kit2.jpg" },
+        { id: 'kit1', name: "Klara to'plami", price: 200000, img: "Klara_toplami.jpg" },
+        { id: 'kit2', name: "Alisa to'plami", price: 200000, img: "Alisa_toplami.jpg" },
         { id: 'kit3', name: "Zara to'plami", price: 200000, img: "Zara to'plami.jpg" },
         { id: 'kit4', name: "Ella to'plami", price: 200000, img: "Ella_ to'plami..jpg" },
         { id: 'kit5', name: "Ro'za to'plami", price: 200000, img: "Ro'za to'plami.jpg" },
