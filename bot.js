@@ -31,11 +31,11 @@ const db = {
 // --- MAHSULOTLAR RO'YXATI ---
 const products = {
     kits: [
-        { id: 'kit1', name: "Klara to'plami", price: 150000, img: "kit1.jpg" },
-        { id: 'kit2', name: "Alisa to'plami", price: 160000, img: "kit2.jpg" },
-        { id: 'kit3', name: "Zara to'plami", price: 150000, img: "Zara to'plami.jpg" },
-        { id: 'kit4', name: "Ella to'plami", price: 150000, img: "Ella_ to'plami..jpg" },
-        { id: 'kit5', name: "Ro'za to'plami", price: 150000, img: "Ro'za to'plami.jpg" },
+        { id: 'kit1', name: "Klara to'plami", price: 200000, img: "kit1.jpg" },
+        { id: 'kit2', name: "Alisa to'plami", price: 200000, img: "kit2.jpg" },
+        { id: 'kit3', name: "Zara to'plami", price: 200000, img: "Zara to'plami.jpg" },
+        { id: 'kit4', name: "Ella to'plami", price: 200000, img: "Ella_ to'plami..jpg" },
+        { id: 'kit5', name: "Ro'za to'plami", price: 200000, img: "Ro'za to'plami.jpg" },
         { id: 'kit6', name: "Liza to'plami", price: 350000, img: "Liza to'plami.jpg" }
     ],
     matolar: [
@@ -233,10 +233,19 @@ bot.use((ctx, next) => {
     return next();
 });
 
+// Xatoliklarni ushlab qolish (Bot qotib qolmasligi uchun)
+bot.catch((err, ctx) => {
+    console.error(`Ooops, encountered an error for ${ctx.updateType}`, err);
+});
+
 // --- ASOSIY BUYRUQLAR ---
-bot.start((ctx) => {
+bot.start(async (ctx) => {
     db.users += 1;
-    ctx.reply(`Salom ${ctx.from.first_name || ''}! Bizning qo'g'irchoqlar va mahsulotlar do'konimizga xush kelibsiz.\nQuyidagi menyudan kerakli bo'limni tanlang:`, mainMenu);
+    try {
+        await ctx.reply(`Salom ${ctx.from.first_name || ''}! Bizning qo'g'irchoqlar va mahsulotlar do'konimizga xush kelibsiz.\nQuyidagi menyudan kerakli bo'limni tanlang:`, mainMenu);
+    } catch (e) {
+        console.error("Bot.start dagi xatolik:", e.message);
+    }
 });
 
 bot.command('admin', (ctx) => {
